@@ -1,38 +1,40 @@
 package hello.jdbc.service;
 
-import hello.jdbc.connection.ConnectionConst;
 import hello.jdbc.domain.Member;
-import hello.jdbc.repository.MemberRepositoryV1;
+import hello.jdbc.repository.MemberRepositoryV2;
+import hello.jdbc.repository.MemberRepositoryV3;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import java.sql.SQLException;
-import java.util.concurrent.ConcurrentNavigableMap;
 
 import static hello.jdbc.connection.ConnectionConst.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * 기본 동작, 트랜잭션 없어서 문제 발생
+ * 트랜잭션 - 트랜잭션 매니져
  */
-class MemberServiceV1Test {
+class MemberServiceV3_1Test {
 
     public static final String MEMBER_A = "memberA";
     public static final String MEMBER_B = "memberB";
     public static final String MEMBER_EX = "ex";
 
-    private MemberRepositoryV1 memberRepository;
-    private MemberServiceV1 memberService;
+    private MemberRepositoryV3 memberRepository;
+    private MemberServiceV3_1 memberService;
 
     @BeforeEach
     void before() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource(URL, USERNAME, PASSWORD);
-        memberRepository = new MemberRepositoryV1(dataSource);
-        memberService = new MemberServiceV1(memberRepository);
+        memberRepository = new MemberRepositoryV3(dataSource);
+
+        PlatformTransactionManager transactionManager = new DataSourceTransactionManager(dataSource);
+        memberService = new MemberServiceV3_1(transactionManager,memberRepository);
     }
 
     @AfterEach
@@ -77,7 +79,7 @@ class MemberServiceV1Test {
         Member findMemberA = memberRepository.findById(memberA.getMemberId());
         Member findMemberEx = memberRepository.findById(memberEx.getMemberId());
 
-        Assertions.assertThat(findMemberA.getMoney()).isEqualTo(8000);
+        Assertions.assertThat(findMemberA.getMoney()).isEqualTo(10000);
         Assertions.assertThat(findMemberEx.getMoney()).isEqualTo(10000);
     }
 
