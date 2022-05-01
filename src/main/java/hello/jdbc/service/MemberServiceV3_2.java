@@ -13,7 +13,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * 트랜잭션 - 트랜잭션 템플릿
+ * 트랜잭션 - 트랜잭션 템플릿 // 템플릿 콜백 패턴 공부
  */
 @Slf4j
 public class MemberServiceV3_2 {

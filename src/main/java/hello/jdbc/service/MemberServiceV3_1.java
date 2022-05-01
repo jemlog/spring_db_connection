@@ -29,6 +29,7 @@ public class MemberServiceV3_1 {
     public void accountTransfer(String fromId,String toId, int money) throws SQLException {
 
         //트랜잭션 시작
+        // 트랜잭션 매니저를 만들때, dataSource가 필요하고, transaction 시작할때는 설정값 넣어주면 된다.
         TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
 
 
@@ -38,6 +39,7 @@ public class MemberServiceV3_1 {
 
             // 비즈니스 로직 실행
             bizLogic(fromId, toId, money);
+            // 트랜잭션 매니저의 핵심은 , 모든 구현체에 대해서 트랜잭션 시작 커밋 롤백 과정을 똑같이 해주는 것이다!
             transactionManager.commit(status);
         }
         catch (Exception e)
